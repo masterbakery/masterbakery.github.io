@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Master Bakery · Tutti i nostri punti vendita</title>
+<meta name="description" content="Master Bakery — Panificio · Bar · Pasticceria · Gastronomia. Trova il punto vendita più vicino: Alessandria e Acqui Terme.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Arvo:wght@400;700&family=Lobster+Two:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --c-brown:#4A2317;
+  --c-brown-dark:#2E1409;
+  --c-gold:#C8A064;
+  --c-gold-light:#E8D5A8;
+  --c-cream:#FAF1DD;
+  --c-white:#FFFFFF;
+  --c-black:#000000;
+  --c-text:#2E1409;
+  --c-text-muted:#6B5444;
+  --shadow:0 4px 12px rgba(74,35,23,.12);
+  --shadow-lg:0 10px 30px rgba(74,35,23,.18);
+  --radius:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Arvo',Georgia,serif;
+  background:var(--c-cream);
+  color:var(--c-text);
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.container{max-width:480px;margin:0 auto;padding:24px 18px 60px}
+
+/* HERO */
+.hero{text-align:center;padding:18px 8px 8px}
+.hero-logo{width:160px;height:160px;margin:0 auto 12px;display:block}
+.hero-name{
+  font-family:'Lobster Two',cursive;
+  font-size:42px;line-height:1;
+  color:var(--c-brown);
+  margin-bottom:4px;
+}
+.hero-name small{display:block;font-family:'Arvo',serif;font-size:14px;letter-spacing:6px;font-weight:400;color:var(--c-brown);margin-top:2px;text-transform:uppercase}
+.hero-tagline{
+  font-size:13px;letter-spacing:1.5px;
+  color:var(--c-text-muted);
+  margin:14px 0 6px;
+  text-transform:uppercase;
+  font-weight:700;
+}
+.hero-sub{font-size:14px;color:var(--c-text-muted);margin-bottom:8px}
+
+/* INTRO */
+.intro{
+  text-align:center;
+  padding:14px 12px;
+  margin:18px 0;
+  background:var(--c-white);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+.intro p{font-size:15px;color:var(--c-text);margin:0}
+.intro strong{color:var(--c-brown);font-weight:700}
+
+/* CARD PV */
+.pv{
+  background:var(--c-white);
+  border-radius:var(--radius);
+  padding:22px 20px;
+  margin-bottom:18px;
+  box-shadow:var(--shadow);
+  border:2px solid transparent;
+  transition:transform .15s, box-shadow .15s;
+}
+.pv:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+
+.pv-header{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.pv-logo{width:64px;height:64px;border-radius:12px;flex-shrink:0;object-fit:contain;background:var(--c-white)}
+.pv-logo.dark{background:var(--c-black);padding:6px}
+.pv-title{flex:1;min-width:0}
+.pv-title h2{
+  font-family:'Lobster Two',cursive;
+  font-size:24px;line-height:1.1;
+  color:var(--c-brown);
+  margin-bottom:2px;
+}
+.pv-title .pv-type{
+  font-size:11px;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--c-text-muted);font-weight:700;
+}
+
+.pv-meta{font-size:14px;color:var(--c-text);margin-bottom:14px;padding-left:2px}
+.pv-meta .row{display:flex;align-items:flex-start;gap:10px;margin-bottom:6px}
+.pv-meta .row svg{flex-shrink:0;margin-top:3px}
+.pv-meta .row .lbl{font-weight:700;color:var(--c-brown);margin-right:4px}
+.pv-meta .row.tbd{color:#B85C00;font-style:italic}
+.pv-meta .inline-link{color:var(--c-brown);text-decoration:none;font-weight:700;border-bottom:1px solid var(--c-gold)}
+.pv-meta .inline-link:hover{color:var(--c-brown-dark);border-color:var(--c-brown)}
+.hours{margin-top:6px;font-size:13px;border-collapse:collapse;width:100%;max-width:200px}
+.hours td{padding:2px 6px;line-height:1.4}
+.hours td:first-child{color:var(--c-text-muted);width:42px;font-weight:700;text-transform:uppercase;font-size:11px;letter-spacing:.5px}
+.hours td:last-child{color:var(--c-text);font-variant-numeric:tabular-nums}
+.hours td.closed{color:#B85C00;font-style:italic}
+.hours strong{color:var(--c-brown);background:var(--c-gold-light);padding:1px 6px;border-radius:4px;font-size:12px}
+
+.pv-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.pv-actions a{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:13px 10px;
+  background:var(--c-brown);color:var(--c-white);
+  text-decoration:none;
+  border-radius:12px;
+  font-family:'Arvo',serif;font-weight:700;font-size:14px;
+  transition:background .15s;
+}
+.pv-actions a:hover{background:var(--c-brown-dark)}
+.pv-actions a.secondary{background:var(--c-gold);color:var(--c-brown-dark)}
+.pv-actions a.secondary:hover{background:#B68B4F}
+.pv-actions a.wide{grid-column:1 / -1;background:var(--c-gold-light);color:var(--c-brown-dark)}
+.pv-actions a.wide:hover{background:#D9C495}
+
+/* Riga social icons sotto i bottoni azione */
+.pv-socials{
+  display:flex;justify-content:center;gap:12px;
+  margin-top:14px;padding-top:12px;
+  border-top:1px solid #EFE2C7;
+}
+.pv-socials a{
+  width:42px;height:42px;border-radius:50%;
+  background:var(--c-cream);color:var(--c-brown);
+  display:flex;align-items:center;justify-content:center;
+  text-decoration:none;
+  transition:background .15s,color .15s,transform .15s;
+}
+.pv-socials a:hover{background:var(--c-brown);color:var(--c-cream);transform:translateY(-2px)}
+.pv-socials a.ig:hover{background:linear-gradient(45deg,#F58529,#DD2A7B,#8134AF);color:#fff}
+.pv-socials a.fb:hover{background:#1877F2;color:#fff}
+
+/* PUNTO GUSTO placeholder logo */
+.pg-logo-placeholder{
+  width:64px;height:64px;border-radius:12px;
+  background:var(--c-black);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Arvo',serif;font-weight:700;
+  font-size:11px;color:var(--c-white);letter-spacing:.5px;
+  text-align:center;line-height:1.1;flex-shrink:0;
+}
+.pg-logo-placeholder span{color:var(--c-gold)}
+
+/* FOOTER */
+.footer{text-align:center;padding:30px 12px 10px;color:var(--c-text-muted);font-size:13px}
+.footer a{color:var(--c-brown);text-decoration:none;font-weight:700}
+.footer-socials{margin:12px 0;display:flex;justify-content:center;gap:14px}
+.footer-socials a{
+  width:44px;height:44px;border-radius:50%;
+  background:var(--c-white);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--shadow);
+  color:var(--c-brown);
+}
+.footer-socials a:hover{background:var(--c-brown);color:var(--c-white)}
+
+/* DESKTOP TWEAK */
+@media (min-width:600px){
+  .container{padding-top:40px}
+  .pv-actions{grid-template-columns:repeat(3,1fr)}
+  .pv-actions a.wide{grid-column:1 / -1}
+}
+</style>
+</head>
+<body>
+<main class="container">
+
+  <!-- ============ HERO ============ -->
+  <header class="hero">
+    <img class="hero-logo" src="img/master-bakery.png" alt="Logo Master Bakery">
+    <h1 class="hero-name">Master<small>bakery</small></h1>
+    <p class="hero-tagline">Panificio · Bar · Pasticceria · Gastronomia</p>
+    <p class="hero-sub">Alessandria · Acqui Terme</p>
+  </header>
+
+  <!-- ============ INTRO ============ -->
+  <section class="intro">
+    <p>Benvenuto. Scegli il <strong>punto vendita</strong> più vicino a te per orari, contatti e indicazioni stradali.</p>
+  </section>
+
+  <!-- ============ PV 1: MASTER BAKERY ============ -->
+  <article class="pv">
+    <div class="pv-header">
+      <img class="pv-logo" src="img/master-bakery.png" alt="Master Bakery Alessandria">
+      <div class="pv-title">
+        <h2>Master Bakery</h2>
+        <div class="pv-type">Alessandria · sede storica</div>
+      </div>
+    </div>
+
+    <div class="pv-meta">
+      <div class="row">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-7 8-13a8 8 0 1 0-16 0c0 6 8 13 8 13z"/><circle cx="12" cy="9" r="3"/></svg>
+        <div><span class="lbl">Indirizzo:</span>Corso Acqui 178, 15121 Alessandria (AL)</div>
+      </div>
+      <div class="row">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <div><span class="lbl">Telefono:</span><a href="tel:+390131381932" class="inline-link">0131 381932</a></div>
+      </div>
+      <div class="row">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <div>
+          <span class="lbl">Orari:</span>
+          <table class="hours">
+            <tr><td>Lun</td><td>05:00–20:00</td></tr>
+            <tr><td>Mar</td><td>05:00–20:00</td></tr>
+            <tr><td>Mer</td><td>05:00–20:00</td></tr>
+            <tr><td>Gio</td><td>05:00–20:00</td></tr>
+            <tr><td>Ven</td><td><strong>24h</strong></td></tr>
+            <tr><td>Sab</td><td><strong>24h</strong></td></tr>
+            <tr><td>Dom</td><td>05:00–20:00</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="pv-actions">
+      <a href="tel:+390131381932">📞 Chiama</a>
+      <a class="secondary" href="https://maps.app.goo.gl/aTNQZTveVVVxVNJz5" target="_blank" rel="noopener">🧭 Indicazioni</a>
+    </div>
+    <div class="pv-socials" aria-label="Social Master Bakery">
+      <a class="ig" href="https://www.instagram.com/master_bakery_official/" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+      </a>
+      <a class="fb" href="https://www.facebook.com/masterbakeryal" target="_blank" rel="noopener" aria-label="Facebook">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
+      </a>
+    </div>
+  </article>
+
+  <!-- ============ PV 2: IL MULINO ============ -->
+  <article class="pv">
+    <div class="pv-header">
+      <img class="pv-logo" src="img/il-mulino.jpg" alt="Il Mulino di Master Bakery">
+      <div class="pv-title">
+        <h2>Il Mulino</h2>
+        <div class="pv-type">Acqui Terme</div>
+      </div>
+    </div>
+
+    <div class="pv-meta">
+      <div class="row">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-7 8-13a8 8 0 1 0-16 0c0 6 8 13 8 13z"/><circle cx="12" cy="9" r="3"/></svg>
+        <div><span class="lbl">Indirizzo:</span>Corso Dante 21, 15011 Acqui Terme (AL)</div>
+      </div>
+      <div class="row">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <div><span class="lbl">Telefono:</span><a href="tel:+390144440191" class="inline-link">0144 440191</a></div>
+      </div>
+      <div class="row">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <div>
+          <span class="lbl">Orari:</span>
+          <table class="hours">
+            <tr><td>Lun</td><td>06:00–20:00</td></tr>
+            <tr><td>Mar</td><td>06:00–20:00</td></tr>
+            <tr><td>Mer</td><td>06:00–20:00</td></tr>
+            <tr><td>Gio</td><td>06:00–20:00</td></tr>
+            <tr><td>Ven</td><td>06:00–20:00</td></tr>
+            <tr><td>Sab</td><td><strong>24h</strong></td></tr>
+            <tr><td>Dom</td><td>00:00–20:00</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="pv-actions">
+      <a href="tel:+390144440191">📞 Chiama</a>
+      <a class="secondary" href="https://maps.app.goo.gl/cXhTHm1tKqQts3B2A" target="_blank" rel="noopener">🧭 Indicazioni</a>
+    </div>
+    <div class="pv-socials" aria-label="Social Il Mulino">
+      <a class="ig" href="https://www.instagram.com/mulino_acqui_official/" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+      </a>
+      <a class="fb" href="https://www.facebook.com/ilmulinodiacqui" target="_blank" rel="noopener" aria-label="Facebook">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
+      </a>
+    </div>
+  </article>
+
+  <!-- ============ PV 3: PUNTO GUSTO ============ -->
+  <article class="pv">
+    <div class="pv-header">
+      <div class="pg-logo-placeholder">Punto<br><span>G</span>usto</div>
+      <div class="pv-title">
+        <h2>Punto Gusto</h2>
+        <div class="pv-type">Alessandria · gastronomia</div>
+      </div>
+    </div>
+
+    <div class="pv-meta">
+      <div class="row">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-7 8-13a8 8 0 1 0-16 0c0 6 8 13 8 13z"/><circle cx="12" cy="9" r="3"/></svg>
+        <div><span class="lbl">Indirizzo:</span>Corso Acqui 117, 15121 Alessandria (AL)</div>
+      </div>
+      <div class="row">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <div><span class="lbl">Telefono:</span><a href="tel:+390131748870" class="inline-link">0131 748870</a></div>
+      </div>
+      <div class="row">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <div>
+          <span class="lbl">Orari:</span>
+          <table class="hours">
+            <tr><td>Lun</td><td>07:00–14:00</td></tr>
+            <tr><td>Mar</td><td>07:00–14:00</td></tr>
+            <tr><td>Mer</td><td>07:00–14:00</td></tr>
+            <tr><td>Gio</td><td>07:00–14:00</td></tr>
+            <tr><td>Ven</td><td>07:00–14:00</td></tr>
+            <tr><td>Sab</td><td>07:00–14:00</td></tr>
+            <tr><td>Dom</td><td class="closed">Chiuso</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="pv-actions">
+      <a href="tel:+390131748870">📞 Chiama</a>
+      <a class="secondary" href="https://maps.app.goo.gl/ULkZhmtr4GTbtiwM7" target="_blank" rel="noopener">🧭 Indicazioni</a>
+    </div>
+    <div class="pv-socials" aria-label="Social Punto Gusto">
+      <a class="ig" href="https://www.instagram.com/punto_gusto_/" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+      </a>
+      <a class="fb" href="https://www.facebook.com/Puntogustoal" target="_blank" rel="noopener" aria-label="Facebook">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
+      </a>
+    </div>
+  </article>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <p>Visita il sito ufficiale: <a href="https://www.masterbakery.it/" target="_blank" rel="noopener">masterbakery.it</a></p>
+    <div class="footer-socials" aria-label="Social Master Bakery">
+      <a href="https://www.facebook.com/masterbakeryal/" target="_blank" rel="noopener" aria-label="Facebook Master Bakery">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
+      </a>
+    </div>
+    <p style="font-size:11px;margin-top:14px;color:var(--c-text-muted)">
+      © Master Bakery SRL — P.IVA 04595428...
+    </p>
+  </footer>
+
+</main>
+</body>
+</html>
