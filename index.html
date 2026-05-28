@@ -26,12 +26,18 @@
   --radius:18px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+html{
+  scroll-behavior:smooth;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+  font-size:16px;
+}
 body{
   font-family:'Arvo',Georgia,serif;
   background:var(--c-cream);
   color:var(--c-text);
   line-height:1.55;
+  font-size:16px;
   -webkit-font-smoothing:antialiased;
 }
 .container{max-width:480px;margin:0 auto;padding:24px 18px 60px}
