@@ -196,7 +196,7 @@ body{
   </section>
 
   <!-- ============ PV 1: MASTER BAKERY ============ -->
-  <article class="pv">
+  <article class="pv" data-pv="M178">
     <div class="pv-header">
       <img class="pv-logo" src="master-bakery.png" alt="Master Bakery Alessandria">
       <div class="pv-title">
@@ -246,7 +246,7 @@ body{
   </article>
 
   <!-- ============ PV 2: IL MULINO ============ -->
-  <article class="pv">
+  <article class="pv" data-pv="Mulino">
     <div class="pv-header">
       <img class="pv-logo" src="il-mulino.jpg" alt="Il Mulino di Master Bakery">
       <div class="pv-title">
@@ -296,7 +296,7 @@ body{
   </article>
 
   <!-- ============ PV 3: PUNTO GUSTO ============ -->
-  <article class="pv">
+  <article class="pv" data-pv="PuntoGusto">
     <div class="pv-header">
       <div class="pg-logo-placeholder">Punto<br><span>G</span>usto</div>
       <div class="pv-title">
@@ -359,5 +359,57 @@ body{
   </footer>
 
 </main>
+
+<!-- ===== Tracking traffico link-in-bio → Google Sheet (scheda "Traffico_LinkBio") ===== -->
+<!-- Setup completo: vedi Tracking_LinkBio_SETUP_v1_0.md -->
+<script>
+(function(){
+  // ⬇️ INCOLLA QUI l'URL del Web App Apps Script (quello che finisce con /exec)
+  var TRACK_URL = 'https://script.google.com/macros/s/AKfycbyCusx5qELYbG3v45mH6PW51lvJ4T6lZbOFmdX8ZSi2CyN4T9G4DBOb79TLLJXgIB6Y1A/exec';
+  if (TRACK_URL.indexOf('http') !== 0) return; // se non configurato, non fa nulla
+
+  var params = new URLSearchParams(window.location.search);
+  var fonte = (params.get('f') || 'diretto').toLowerCase(); // provenienza dal ?f=
+
+  function invia(pv, evento){
+    var payload = {
+      data: new Date().toLocaleString('it-IT', { timeZone: 'Europe/Rome' }),
+      provenienza: fonte,
+      pv: pv || '',
+      evento: evento
+    };
+    var body = JSON.stringify(payload);
+    try {
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(TRACK_URL, body);
+      } else {
+        fetch(TRACK_URL, { method:'POST', mode:'no-cors',
+          headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: body, keepalive:true });
+      }
+    } catch(e){}
+  }
+
+  // 1) apertura della pagina
+  invia('', 'apertura');
+
+  // 2) click su pulsanti e social di ciascun punto vendita
+  document.querySelectorAll('article.pv').forEach(function(card){
+    var pv = card.getAttribute('data-pv') || '';
+    card.querySelectorAll('a').forEach(function(a){
+      var href = (a.getAttribute('href') || ''), ev = null;
+      if (href.indexOf('tel:') === 0) ev = 'chiama';
+      else if (href.indexOf('maps.app.goo.gl') > -1) ev = 'maps';
+      else if (a.classList.contains('ig')) ev = 'instagram';
+      else if (a.classList.contains('fb')) ev = 'facebook';
+      if (ev) a.addEventListener('click', function(){ invia(pv, ev); });
+    });
+  });
+
+  // 3) Facebook nel footer
+  document.querySelectorAll('.footer-socials a').forEach(function(a){
+    a.addEventListener('click', function(){ invia('', 'facebook_footer'); });
+  });
+})();
+</script>
 </body>
 </html>
