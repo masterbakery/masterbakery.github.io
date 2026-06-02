@@ -177,6 +177,62 @@ body{
   .pv-actions{grid-template-columns:repeat(3,1fr)}
   .pv-actions a.wide{grid-column:1 / -1}
 }
+
+/* SIGNUP / ISCRIZIONE */
+.signup{
+  background:var(--c-brown);
+  color:var(--c-cream);
+  border-radius:var(--radius);
+  padding:24px 20px;
+  margin:18px 0;
+  box-shadow:var(--shadow-lg);
+}
+.signup h2{
+  font-family:'Lobster Two',cursive;
+  font-size:27px;color:var(--c-gold-light);
+  text-align:center;margin-bottom:4px;
+}
+.signup .sub{
+  text-align:center;font-size:14px;color:var(--c-gold-light);
+  margin-bottom:16px;
+}
+.signup .field{margin-bottom:12px}
+.signup label{
+  display:block;font-size:13px;font-weight:700;
+  color:var(--c-gold-light);margin-bottom:5px;letter-spacing:.3px;
+}
+.signup label .optional{font-weight:400;text-transform:none;opacity:.85}
+.signup input, .signup select{
+  width:100%;padding:12px 14px;
+  border:none;border-radius:10px;
+  font-family:'Arvo',serif;font-size:15px;
+  color:var(--c-text);background:var(--c-white);
+}
+.signup .gdpr{
+  display:flex;align-items:flex-start;gap:10px;
+  margin:14px 0;font-size:12px;line-height:1.45;color:var(--c-cream);cursor:pointer;
+}
+.signup .gdpr input{width:auto;margin-top:3px;flex-shrink:0}
+.signup .gdpr a{color:var(--c-gold-light);font-weight:700}
+.signup button{
+  width:100%;padding:14px;
+  border:none;border-radius:12px;cursor:pointer;
+  background:var(--c-gold);color:var(--c-brown-dark);
+  font-family:'Arvo',serif;font-weight:700;font-size:16px;
+  transition:background .15s;
+}
+.signup button:hover{background:#B68B4F}
+.signup button:disabled{opacity:.7;cursor:default}
+.signup .err{
+  display:none;background:#FFE2E2;color:#B0001E;
+  padding:10px 12px;border-radius:8px;font-size:13px;margin-bottom:10px;
+}
+.signup .success{display:none;text-align:center;padding:8px 4px}
+.signup .success h3{
+  font-family:'Lobster Two',cursive;font-size:25px;
+  color:var(--c-gold-light);margin-bottom:6px;
+}
+.signup .success p{font-size:14px;color:var(--c-cream)}
 </style>
 </head>
 <body>
@@ -193,6 +249,45 @@ body{
   <!-- ============ INTRO ============ -->
   <section class="intro">
     <p>Benvenuto. Scegli il <strong>punto vendita</strong> più vicino a te per orari, contatti e indicazioni stradali.</p>
+  </section>
+
+  <!-- ============ ISCRIZIONE ============ -->
+  <section class="signup">
+    <h2>Resta in contatto</h2>
+    <p class="sub">Iscriviti e ricevi offerte e novità dai nostri punti vendita.</p>
+    <div id="signup-err" class="err"></div>
+    <form id="signup-form" novalidate>
+      <div class="field">
+        <label>Nome *</label>
+        <input type="text" id="f-nome" placeholder="Come ti chiamiamo?" required>
+      </div>
+      <div class="field">
+        <label>Email *</label>
+        <input type="email" id="f-email" placeholder="la.tua@email.it" required>
+      </div>
+      <div class="field">
+        <label>Cellulare <span class="optional">(facoltativo)</span></label>
+        <input type="tel" id="f-cell" placeholder="+39 333 000 0000">
+      </div>
+      <div class="field">
+        <label>Punto vendita di riferimento</label>
+        <select id="f-pv">
+          <option value="">Scegli un negozio…</option>
+          <option value="Master 178">Master 178 · Alessandria</option>
+          <option value="Il Mulino">Il Mulino · Acqui Terme</option>
+          <option value="Punto Gusto">Punto Gusto · Alessandria</option>
+        </select>
+      </div>
+      <label class="gdpr">
+        <input type="checkbox" id="f-gdpr" required>
+        <span>Acconsento al trattamento dei miei dati personali da parte di Master Bakery SRL per ricevere comunicazioni promozionali. I dati non saranno ceduti a terzi. Puoi revocare il consenso scrivendo a <a href="mailto:info@masterbakery.it">info@masterbakery.it</a>.</span>
+      </label>
+      <button type="submit" id="f-btn">Iscrivimi</button>
+    </form>
+    <div id="signup-ok" class="success">
+      <h3>Grazie, sei iscritto! 🥐</h3>
+      <p>Ti terremo aggiornato sulle nostre novità.</p>
+    </div>
   </section>
 
   <!-- ============ PV 1: MASTER BAKERY ============ -->
@@ -360,54 +455,60 @@ body{
 
 </main>
 
-<!-- ===== Tracking traffico link-in-bio → Google Sheet (scheda "Traffico_LinkBio") ===== -->
+<!-- ===== Modulo iscrizione link-in-bio → Google Sheet (scheda "Lead_LinkBio") ===== -->
 <!-- Setup completo: vedi Tracking_LinkBio_SETUP_v1_0.md -->
 <script>
 (function(){
-  // ⬇️ INCOLLA QUI l'URL del Web App Apps Script (quello che finisce con /exec)
   var TRACK_URL = 'https://script.google.com/macros/s/AKfycbyCusx5qELYbG3v45mH6PW51lvJ4T6lZbOFmdX8ZSi2CyN4T9G4DBOb79TLLJXgIB6Y1A/exec';
-  if (TRACK_URL.indexOf('http') !== 0) return; // se non configurato, non fa nulla
 
   var params = new URLSearchParams(window.location.search);
   var fonte = (params.get('f') || 'diretto').toLowerCase(); // provenienza dal ?f=
 
-  function invia(pv, evento){
-    var payload = {
-      data: new Date().toLocaleString('it-IT', { timeZone: 'Europe/Rome' }),
-      provenienza: fonte,
-      pv: pv || '',
-      evento: evento
-    };
-    var body = JSON.stringify(payload);
-    try {
-      if (navigator.sendBeacon) {
-        navigator.sendBeacon(TRACK_URL, body);
-      } else {
-        fetch(TRACK_URL, { method:'POST', mode:'no-cors',
-          headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: body, keepalive:true });
-      }
-    } catch(e){}
+  // Pre-seleziona il punto vendita in base al social di provenienza
+  var pvSel = document.getElementById('f-pv');
+  if (pvSel) {
+    if (fonte.indexOf('m178') > -1) pvSel.value = 'Master 178';
+    else if (fonte.indexOf('mulino') > -1) pvSel.value = 'Il Mulino';
+    else if (fonte.indexOf('pg') > -1 || fonte.indexOf('gusto') > -1) pvSel.value = 'Punto Gusto';
   }
 
-  // 1) apertura della pagina
-  invia('', 'apertura');
+  var form = document.getElementById('signup-form');
+  var err  = document.getElementById('signup-err');
+  var ok   = document.getElementById('signup-ok');
+  var btn  = document.getElementById('f-btn');
 
-  // 2) click su pulsanti e social di ciascun punto vendita
-  document.querySelectorAll('article.pv').forEach(function(card){
-    var pv = card.getAttribute('data-pv') || '';
-    card.querySelectorAll('a').forEach(function(a){
-      var href = (a.getAttribute('href') || ''), ev = null;
-      if (href.indexOf('tel:') === 0) ev = 'chiama';
-      else if (href.indexOf('maps.app.goo.gl') > -1) ev = 'maps';
-      else if (a.classList.contains('ig')) ev = 'instagram';
-      else if (a.classList.contains('fb')) ev = 'facebook';
-      if (ev) a.addEventListener('click', function(){ invia(pv, ev); });
+  function showErr(m){ err.textContent = m; err.style.display = 'block'; }
+  function validEmail(x){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(x); }
+
+  if (form) form.addEventListener('submit', function(e){
+    e.preventDefault();
+    err.style.display = 'none';
+    var nome  = document.getElementById('f-nome').value.trim();
+    var email = document.getElementById('f-email').value.trim();
+    var cell  = document.getElementById('f-cell').value.trim();
+    var pv    = document.getElementById('f-pv').value;
+    var gdpr  = document.getElementById('f-gdpr').checked;
+    if (!nome)  { showErr('Inserisci il tuo nome.'); return; }
+    if (!email || !validEmail(email)) { showErr('Inserisci un indirizzo email valido.'); return; }
+    if (!gdpr)  { showErr('È necessario accettare il trattamento dei dati.'); return; }
+    btn.disabled = true; btn.textContent = 'Invio in corso…';
+
+    var payload = {
+      data: new Date().toLocaleString('it-IT', { timeZone: 'Europe/Rome' }),
+      nome: nome, email: email, cellulare: cell, pv: pv, fonte: fonte
+    };
+    fetch(TRACK_URL, {
+      method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=UTF-8'},
+      body: JSON.stringify(payload)
+    }).then(function(){
+      form.style.display = 'none';
+      ok.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }).catch(function(){
+      btn.disabled = false; btn.textContent = 'Iscrivimi';
+      showErr('Qualcosa è andato storto, riprova.');
     });
-  });
-
-  // 3) Facebook nel footer
-  document.querySelectorAll('.footer-socials a').forEach(function(a){
-    a.addEventListener('click', function(){ invia('', 'facebook_footer'); });
   });
 })();
 </script>
