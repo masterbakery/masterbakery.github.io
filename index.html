@@ -266,8 +266,8 @@ body{
         <input type="email" id="f-email" placeholder="la.tua@email.it" required>
       </div>
       <div class="field">
-        <label>Cellulare <span class="optional">(facoltativo)</span></label>
-        <input type="tel" id="f-cell" placeholder="+39 333 000 0000">
+        <label>Cellulare *</label>
+        <input type="tel" id="f-cell" placeholder="+39 333 000 0000" required>
       </div>
       <div class="field">
         <label>Punto vendita di riferimento</label>
@@ -490,6 +490,7 @@ body{
     var gdpr  = document.getElementById('f-gdpr').checked;
     if (!nome)  { showErr('Inserisci il tuo nome.'); return; }
     if (!email || !validEmail(email)) { showErr('Inserisci un indirizzo email valido.'); return; }
+    if (!cell)  { showErr('Inserisci il numero di cellulare.'); return; }
     if (!gdpr)  { showErr('È necessario accettare il trattamento dei dati.'); return; }
     btn.disabled = true; btn.textContent = 'Invio in corso…';
 
