@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- ============================================================
      Master Bakery — HUB unico link.masterbakery.it
-     Aggiornato al 04/06/2026 (ora Roma) · v2.1 (+ timbro data sul coupon caffè)
+     Aggiornato al 04/06/2026 (ora Roma) · v2.2 (coupon caffè con timbro: emesso il / valido 7 giorni)
      Una pagina, due modalità decise dall'etichetta ?s= (o ?pv= dai QR stampati):
        • social/adv  → form "Resta in contatto" in cima + i 3 PV
        • negozio (?s=qr-...) → iscrizione col CAFFÈ in regalo, poi "Com'è andata?"
@@ -262,11 +262,12 @@ body{
 .caffe-coupon .t{font-family:'Lobster Two',cursive;font-size:23px;color:var(--c-brown);margin:4px 0}
 .caffe-coupon .d{font-size:13px;color:var(--c-text-muted)}
 .caffe-coupon .stamp{
-  display:inline-block;margin-top:12px;padding:3px 10px;
+  display:inline-block;margin-top:12px;padding:4px 12px;
   border:1.5px solid var(--c-gold);border-radius:6px;
-  font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
   color:var(--c-brown);transform:rotate(-3deg);opacity:.9;
 }
+.caffe-coupon .stamp .valid{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.caffe-coupon .stamp .emit{font-size:9px;font-weight:400;letter-spacing:.3px;opacity:.8;margin-top:1px}
 
 /* Link "salta" (modalità negozio) */
 .skip-link{display:none;text-align:center;margin-top:14px}
@@ -368,7 +369,10 @@ body{
         <div class="ico">☕</div>
         <div class="t">Un caffè offerto!</div>
         <div class="d">Mostra questa schermata al banco alla tua prossima visita.</div>
-        <div class="stamp" id="caffe-stamp"></div>
+        <div class="stamp" id="caffe-stamp">
+          <div class="valid" id="caffe-valid"></div>
+          <div class="emit" id="caffe-emit"></div>
+        </div>
       </div>
     </div>
   </section>
@@ -562,6 +566,9 @@ body{
 (function(){
   var TRACK_URL = 'https://script.google.com/macros/s/AKfycbyCusx5qELYbG3v45mH6PW51lvJ4T6lZbOFmdX8ZSi2CyN4T9G4DBOb79TLLJXgIB6Y1A/exec';
 
+  // Giorni di validità del coupon caffè (cambia qui se in futuro vuoi accorciare/allungare)
+  var COUPON_VALIDITA_GIORNI = 7;
+
   // Dati recensione/feedback per PV (presi da feedback.html)
   var PV_DATA = {
     'Master 178': { review:'https://g.page/r/CRESF4GuR0RHEAE/review' },
@@ -685,9 +692,15 @@ body{
       ok.style.display = 'block';
       if (isNegozio) {
         caffePromo.style.display = 'none';
-        var stamp = document.getElementById('caffe-stamp');
-        if (stamp) stamp.textContent = 'Emesso il ' + new Date().toLocaleDateString('it-IT');
-        caffeCoupon.style.display = 'block';   // mostra il coupon caffè (con timbro data)
+        // Timbro: data emissione (oggi) + scadenza (oggi + COUPON_VALIDITA_GIORNI)
+        var oggi = new Date();
+        var scad = new Date(); scad.setDate(scad.getDate() + COUPON_VALIDITA_GIORNI);
+        var fmtData = function(d){ return d.toLocaleDateString('it-IT'); };
+        var vEl = document.getElementById('caffe-valid');
+        var eEl = document.getElementById('caffe-emit');
+        if (vEl) vEl.textContent = 'Valido fino al ' + fmtData(scad);
+        if (eEl) eEl.textContent = 'Emesso il ' + fmtData(oggi);
+        caffeCoupon.style.display = 'block';   // mostra il coupon caffè (con timbro scadenza)
         showFeedback(); // poi chiedi la recensione (sottotitolo di default, niente ripetizione)
       }
       window.scrollTo({ top: 0, behavior: 'smooth' });
