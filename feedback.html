@@ -1,241 +1,46 @@
 <!DOCTYPE html>
+<!-- ============================================================
+     Master Bakery — PONTE per i QR già stampati
+     Aggiornato al 04/06/2026 10:42 (ora Roma) · v2.0
+     I QR su locandine/banco puntano qui (feedback.html?pv=m178|mulino|puntogusto).
+     Questa pagina NON mostra più nulla: reindirizza all'HUB (index.html) in
+     modalità "negozio" con l'etichetta giusta (?s=qr-banco-<pv>), così i QR
+     già in giro restano validi senza ristamparli.
+     ============================================================ -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="color-scheme" content="light only">
-<meta name="supported-color-schemes" content="light">
 <meta name="robots" content="noindex">
-<title>Master Bakery · Seguici e dicci com'è andata</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Arvo:wght@400;700&family=Lobster+Two:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<title>Master Bakery</title>
 <style>
-:root{
-  --c-brown:#4A2317;
-  --c-brown-dark:#2E1409;
-  --c-gold:#C8A064;
-  --c-gold-light:#E8D5A8;
-  --c-cream:#FAF1DD;
-  --c-white:#FFFFFF;
-  --c-text:#2E1409;
-  --c-text-muted:#6B5444;
-  --shadow:0 4px 12px rgba(74,35,23,.12);
-  --shadow-lg:0 10px 30px rgba(74,35,23,.18);
-  --radius:18px;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{
-  scroll-behavior:smooth;
-  -webkit-text-size-adjust:100%;
-  text-size-adjust:100%;
-  font-size:16px;
-}
-body{
-  font-family:'Arvo',Georgia,serif;
-  background:var(--c-cream);
-  color:var(--c-text);
-  line-height:1.55;
-  font-size:16px;
-  -webkit-font-smoothing:antialiased;
-}
-.container{max-width:480px;margin:0 auto;padding:28px 18px 60px}
-
-/* HERO */
-.hero{text-align:center;padding:8px 8px 4px}
-.hero-logo{width:120px;height:120px;margin:0 auto 10px;display:block}
-.hero-name{
-  font-family:'Lobster Two',cursive;
-  font-size:34px;line-height:1;
-  color:var(--c-brown);
-  margin-bottom:4px;
-}
-.hero-name small{display:block;font-family:'Arvo',serif;font-size:12px;letter-spacing:5px;font-weight:400;color:var(--c-brown);margin-top:2px;text-transform:uppercase}
-.hero-pv{
-  font-family:'Lobster Two',cursive;
-  font-size:22px;color:var(--c-brown-dark);
-  margin-top:6px;
-}
-.hero-pv small{display:block;font-family:'Arvo',serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--c-text-muted);font-weight:700;margin-top:2px}
-
-/* CARD */
-.card{
-  background:var(--c-white);
-  border-radius:var(--radius);
-  padding:22px 20px;
-  margin-top:18px;
-  box-shadow:var(--shadow);
-}
-.card h2{
-  font-family:'Lobster Two',cursive;
-  font-size:23px;color:var(--c-brown);
-  text-align:center;margin-bottom:4px;
-}
-.card p.sub{
-  text-align:center;font-size:14px;color:var(--c-text-muted);
-  margin-bottom:18px;
-}
-
-/* BOTTONI */
-.btn{
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  padding:15px 14px;
-  text-decoration:none;
-  border-radius:12px;
-  font-family:'Arvo',serif;font-weight:700;font-size:15px;
-  transition:background .15s,transform .15s;
-  margin-bottom:12px;
-}
-.btn:active{transform:scale(.985)}
-.btn svg{flex-shrink:0}
-.btn-ig{background:linear-gradient(45deg,#F58529,#DD2A7B,#8134AF);color:#fff}
-.btn-fb{background:#1877F2;color:#fff}
-.btn-google{background:var(--c-white);color:var(--c-brown-dark);border:2px solid var(--c-gold)}
-.btn-google:hover{background:var(--c-gold-light)}
-.btn-wa{background:#25D366;color:#fff}
-.btn-wa:hover{background:#1FB855}
-.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.btn-row .btn{margin-bottom:0}
-
-.divider{
-  display:flex;align-items:center;gap:12px;
-  margin:26px 2px 18px;color:var(--c-text-muted);
-  font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;
-}
-.divider::before,.divider::after{content:"";flex:1;height:1px;background:#E4D4B4}
-
-.feedback-intro{text-align:center;font-size:14px;color:var(--c-text);margin-bottom:16px}
-.feedback-intro strong{color:var(--c-brown)}
-
-.choice{
-  display:flex;flex-direction:column;align-items:center;gap:6px;
-  padding:18px 12px;border-radius:14px;text-decoration:none;
-  background:var(--c-cream);color:var(--c-brown-dark);
-  border:2px solid transparent;transition:border-color .15s,transform .15s;
-}
-.choice:active{transform:scale(.985)}
-.choice .emoji{font-size:30px;line-height:1}
-.choice .lbl{font-weight:700;font-size:14px;text-align:center}
-.choice .hint{font-size:11px;color:var(--c-text-muted);text-align:center;line-height:1.3}
-.choice.good:hover{border-color:var(--c-gold)}
-.choice.bad:hover{border-color:#25D366}
-.choice-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-
-.foot{text-align:center;margin-top:28px;font-size:13px}
-.foot a{color:var(--c-brown);font-weight:700;text-decoration:none;border-bottom:1px solid var(--c-gold)}
-.foot .piva{display:block;margin-top:14px;font-size:11px;color:var(--c-text-muted)}
+  html,body{height:100%}
+  body{margin:0;display:flex;align-items:center;justify-content:center;
+    background:#FAF1DD;color:#4A2317;
+    font-family:Georgia,'Times New Roman',serif;text-align:center;padding:24px}
+  .box{max-width:340px}
+  .box h1{font-size:22px;margin:0 0 8px}
+  .box p{font-size:14px;color:#6B5444;margin:0 0 16px}
+  .box a{color:#4A2317;font-weight:bold}
 </style>
+<script>
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var pv = (params.get('pv') || '').toLowerCase();
+  // Mappa le vecchie chiavi ?pv= sulle etichette QR-negozio dell'hub
+  var map = { m178:'qr-banco-m178', mulino:'qr-banco-mulino', puntogusto:'qr-banco-pg' };
+  var s = map[pv] || 'qr-banco';
+  // Reindirizza all'hub (replace = non sporca la cronologia / no loop col "back")
+  window.location.replace('index.html?s=' + s);
+})();
+</script>
 </head>
 <body>
-<main class="container">
-
-  <header class="hero">
-    <img class="hero-logo" src="master-bakery.png" alt="Logo Master Bakery">
-    <h1 class="hero-name">Master<small>bakery</small></h1>
-    <div class="hero-pv" id="pvName">I nostri punti vendita<small id="pvType">Alessandria · Acqui Terme</small></div>
-  </header>
-
-  <!-- BLOCCO 1: SEGUICI (intento originale dei QR) -->
-  <section class="card">
-    <h2>Resta aggiornato</h2>
-    <p class="sub">Novità, sfornate del giorno e promozioni</p>
-    <div class="btn-row">
-      <a class="btn btn-ig" id="igBtn" href="#" target="_blank" rel="noopener">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-        Instagram
-      </a>
-      <a class="btn btn-fb" id="fbBtn" href="#" target="_blank" rel="noopener">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
-        Facebook
-      </a>
-    </div>
-  </section>
-
-  <!-- BLOCCO 2: COM'È ANDATA -->
-  <section class="card">
-    <h2>Com'è andata oggi?</h2>
-    <p class="sub">Il tuo parere conta davvero per noi</p>
-
-    <div class="choice-row">
-      <!-- CONTENTO -> recensione Google del PV -->
-      <a class="choice good" id="goodBtn" href="#" target="_blank" rel="noopener">
-        <span class="emoji">😊</span>
-        <span class="lbl">Tutto bene!</span>
-        <span class="hint">Lasciaci una recensione su Google</span>
-      </a>
-      <!-- NON CONTENTO -> WhatsApp diretto ad Andrea -->
-      <a class="choice bad" id="badBtn" href="#">
-        <span class="emoji">😕</span>
-        <span class="lbl">Si poteva fare meglio</span>
-        <span class="hint">Scrivici in privato, ci pensiamo noi</span>
-      </a>
-    </div>
-  </section>
-
-  <p class="foot">
-    <a href="index.html">← Tutti i punti vendita, orari e mappe</a>
-    <span class="piva">© Master Bakery SRL — P.IVA 12043170013</span>
-  </p>
-
-</main>
-
-<script>
-// ---- Configurazione punti vendita -------------------------------------
-// review: per ora link Google via CID (apre la scheda, il cliente tocca
-// "Scrivi una recensione"). DA SOSTITUIRE col link ufficiale "richiedi
-// recensioni" del Profilo Business (g.page/r/.../review) quando disponibile:
-//   basta cambiare il campo "review" qui sotto, il QR stampato non cambia.
-var PV = {
-  m178: {
-    nome:  "Master Bakery",
-    tipo:  "Alessandria · sede storica",
-    ig:    "https://www.instagram.com/master_bakery_official/",
-    fb:    "https://www.facebook.com/masterbakeryal",
-    review:"https://g.page/r/CRESF4GuR0RHEAE/review"
-  },
-  mulino: {
-    nome:  "Il Mulino",
-    tipo:  "Acqui Terme",
-    ig:    "https://www.instagram.com/mulino_acqui_official/",
-    fb:    "https://www.facebook.com/ilmulinodiacqui",
-    review:"https://g.page/r/CenAsSnpwMp4EAE/review"
-  },
-  puntogusto: {
-    nome:  "Punto Gusto",
-    tipo:  "Alessandria · gastronomia",
-    ig:    "https://www.instagram.com/punto_gusto_/",
-    fb:    "https://www.facebook.com/Puntogustoal",
-    review:"https://g.page/r/CYY8r1MxAPe6EAE/review"
-  }
-};
-var WA_NUMBER = "393517071173"; // WhatsApp Business dedicato
-
-// ---- Selezione PV dal parametro ?pv= ----------------------------------
-function getParam(name){
-  var m = new RegExp("[?&]"+name+"=([^&]+)").exec(window.location.search);
-  return m ? decodeURIComponent(m[1]) : null;
-}
-var key = (getParam("pv")||"").toLowerCase();
-var pv  = PV[key];
-
-if (pv){
-  document.getElementById("pvName").childNodes[0].nodeValue = pv.nome;
-  document.getElementById("pvType").textContent = pv.tipo;
-  document.getElementById("igBtn").href = pv.ig;
-  document.getElementById("fbBtn").href = pv.fb;
-  document.getElementById("goodBtn").href = pv.review;
-  var msg = "Ciao, vorrei lasciarvi un feedback su " + pv.nome + ": ";
-  document.getElementById("badBtn").href =
-    "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(msg);
-} else {
-  // Fallback se il QR non porta un ?pv= valido: profili principali Master Bakery
-  document.getElementById("igBtn").href = PV.m178.ig;
-  document.getElementById("fbBtn").href = PV.m178.fb;
-  document.getElementById("goodBtn").href = PV.m178.review;
-  var msgG = "Ciao, vorrei lasciarvi un feedback su Master Bakery: ";
-  document.getElementById("badBtn").href =
-    "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(msgG);
-}
-</script>
+  <div class="box">
+    <h1>Master Bakery</h1>
+    <p>Ti stiamo portando alla pagina…</p>
+    <!-- Fallback se il redirect automatico non parte (JS disattivato) -->
+    <p><a href="index.html?s=qr-banco">Tocca qui per continuare →</a></p>
+  </div>
 </body>
 </html>

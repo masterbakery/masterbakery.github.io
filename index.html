@@ -1,4 +1,13 @@
 <!DOCTYPE html>
+<!-- ============================================================
+     Master Bakery — HUB unico link.masterbakery.it
+     Aggiornato al 04/06/2026 10:42 (ora Roma) · v2.0
+     Una pagina, due modalità decise dall'etichetta ?s= (o ?pv= dai QR stampati):
+       • social/adv  → form "Resta in contatto" in cima + i 3 PV
+       • negozio (?s=qr-...) → iscrizione col CAFFÈ in regalo, poi "Com'è andata?"
+     Tutti gli iscritti → scheda "Lead_LinkBio" del foglio "Iscritti Master Bakery".
+     Dettagli: PIANO_Hub_Unico_LinkBio + Tracking_LinkBio_SETUP + COME_AGGIORNARE
+     ============================================================ -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -233,6 +242,54 @@ body{
   color:var(--c-gold-light);margin-bottom:6px;
 }
 .signup .success p{font-size:14px;color:var(--c-cream)}
+
+/* CAFFÈ — promo (sopra il form, modalità negozio) */
+.caffe-promo{
+  display:none;
+  background:var(--c-gold-light);color:var(--c-brown-dark);
+  border-radius:12px;padding:12px 14px;margin-bottom:16px;
+  text-align:center;font-size:14px;font-weight:700;line-height:1.35;
+}
+.caffe-promo .big{font-size:30px;display:block;margin-bottom:2px}
+
+/* CAFFÈ — coupon (dopo l'iscrizione, modalità negozio) */
+.caffe-coupon{
+  display:none;margin:6px 0 4px;padding:18px;
+  border:2px dashed var(--c-gold);border-radius:14px;
+  background:var(--c-white);text-align:center;
+}
+.caffe-coupon .ico{font-size:42px;line-height:1}
+.caffe-coupon .t{font-family:'Lobster Two',cursive;font-size:23px;color:var(--c-brown);margin:4px 0}
+.caffe-coupon .d{font-size:13px;color:var(--c-text-muted)}
+
+/* Link "salta" (modalità negozio) */
+.skip-link{display:none;text-align:center;margin-top:14px}
+.skip-link a{color:var(--c-gold-light);font-size:13px;text-decoration:underline;cursor:pointer}
+
+/* FEEDBACK — "Com'è andata?" (modalità negozio) */
+.feedback{
+  display:none;
+  background:var(--c-white);border-radius:var(--radius);
+  padding:22px 20px;margin:18px 0;box-shadow:var(--shadow);
+}
+.feedback h2{
+  font-family:'Lobster Two',cursive;font-size:23px;color:var(--c-brown);
+  text-align:center;margin-bottom:4px;
+}
+.feedback .sub{text-align:center;font-size:14px;color:var(--c-text-muted);margin-bottom:16px}
+.choice-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.choice{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  padding:18px 12px;border-radius:14px;text-decoration:none;
+  background:var(--c-cream);color:var(--c-brown-dark);
+  border:2px solid transparent;transition:border-color .15s,transform .15s;
+}
+.choice:active{transform:scale(.985)}
+.choice .emoji{font-size:30px;line-height:1}
+.choice .lbl{font-weight:700;font-size:14px;text-align:center}
+.choice .hint{font-size:11px;color:var(--c-text-muted);text-align:center;line-height:1.3}
+.choice.good:hover{border-color:var(--c-gold)}
+.choice.bad:hover{border-color:#25D366}
 </style>
 </head>
 <body>
@@ -246,15 +303,22 @@ body{
     <p class="hero-sub">Alessandria · Acqui Terme</p>
   </header>
 
-  <!-- ============ INTRO ============ -->
-  <section class="intro">
+  <!-- ============ INTRO (solo modalità social) ============ -->
+  <section class="intro" id="intro">
     <p>Benvenuto. Scegli il <strong>punto vendita</strong> più vicino a te per orari, contatti e indicazioni stradali.</p>
   </section>
 
   <!-- ============ ISCRIZIONE ============ -->
   <section class="signup">
-    <h2>Resta in contatto</h2>
-    <p class="sub">Iscriviti e ricevi offerte e novità dai nostri punti vendita.</p>
+    <h2 id="signup-title">Resta in contatto</h2>
+    <p class="sub" id="signup-sub">Iscriviti e ricevi offerte e novità dai nostri punti vendita.</p>
+
+    <!-- Promo caffè: visibile solo in modalità negozio -->
+    <div class="caffe-promo" id="caffe-promo">
+      <span class="big">☕</span>
+      Iscriviti ora e ti offriamo un <strong>caffè</strong> alla tua prossima visita!
+    </div>
+
     <div id="signup-err" class="err"></div>
     <form id="signup-form" novalidate>
       <div class="field">
@@ -284,9 +348,39 @@ body{
       </label>
       <button type="submit" id="f-btn">Iscrivimi</button>
     </form>
+
+    <!-- Link "salta": solo modalità negozio -->
+    <div class="skip-link" id="skip-link">
+      <a id="skip-btn">No grazie, voglio solo dirvi com'è andata →</a>
+    </div>
+
     <div id="signup-ok" class="success">
-      <h3>Grazie, sei iscritto! 🥐</h3>
-      <p>Ti terremo aggiornato sulle nostre novità.</p>
+      <h3 id="ok-title">Grazie, sei iscritto! 🥐</h3>
+      <p id="ok-text">Ti terremo aggiornato sulle nostre novità.</p>
+      <!-- Coupon caffè: appare solo in modalità negozio -->
+      <div class="caffe-coupon" id="caffe-coupon">
+        <div class="ico">☕</div>
+        <div class="t">Un caffè offerto!</div>
+        <div class="d">Mostra questa schermata al banco alla tua prossima visita.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FEEDBACK "Com'è andata?" (solo modalità negozio) ============ -->
+  <section class="feedback" id="feedback">
+    <h2>Com'è andata oggi?</h2>
+    <p class="sub" id="fb-sub">Il tuo parere conta davvero per noi</p>
+    <div class="choice-row">
+      <a class="choice good" id="good-btn" href="#" target="_blank" rel="noopener">
+        <span class="emoji">😊</span>
+        <span class="lbl">Tutto bene!</span>
+        <span class="hint">Lasciaci una recensione su Google</span>
+      </a>
+      <a class="choice bad" id="bad-btn" href="#">
+        <span class="emoji">😕</span>
+        <span class="lbl">Si poteva fare meglio</span>
+        <span class="hint">Scrivici in privato, ci pensiamo noi</span>
+      </a>
     </div>
   </section>
 
@@ -455,23 +549,98 @@ body{
 
 </main>
 
-<!-- ===== Modulo iscrizione link-in-bio → Google Sheet (scheda "Lead_LinkBio") ===== -->
-<!-- Setup completo: vedi Tracking_LinkBio_SETUP_v1_0.md -->
+<!-- ===== HUB: modalità + iscrizione → Google Sheet (scheda "Lead_LinkBio") ===== -->
+<!-- Setup completo: vedi Tracking_LinkBio_SETUP + PIANO_Hub_Unico_LinkBio -->
 <script>
 (function(){
   var TRACK_URL = 'https://script.google.com/macros/s/AKfycbyCusx5qELYbG3v45mH6PW51lvJ4T6lZbOFmdX8ZSi2CyN4T9G4DBOb79TLLJXgIB6Y1A/exec';
 
-  var params = new URLSearchParams(window.location.search);
-  var fonte = (params.get('f') || 'diretto').toLowerCase(); // provenienza dal ?f=
+  // Dati recensione/feedback per PV (presi da feedback.html)
+  var PV_DATA = {
+    'Master 178': { review:'https://g.page/r/CRESF4GuR0RHEAE/review' },
+    'Il Mulino':  { review:'https://g.page/r/CenAsSnpwMp4EAE/review' },
+    'Punto Gusto':{ review:'https://g.page/r/CYY8r1MxAPe6EAE/review' }
+  };
+  var WA_NUMBER = '393517071173'; // WhatsApp Business dedicato
 
-  // Pre-seleziona il punto vendita in base al social di provenienza
-  var pvSel = document.getElementById('f-pv');
-  if (pvSel) {
-    if (fonte.indexOf('m178') > -1) pvSel.value = 'Master 178';
-    else if (fonte.indexOf('mulino') > -1) pvSel.value = 'Il Mulino';
-    else if (fonte.indexOf('pg') > -1 || fonte.indexOf('gusto') > -1) pvSel.value = 'Punto Gusto';
+  // ---- Lettura provenienza -------------------------------------------------
+  // ?s= = etichetta unica (nuovo). Compatibilità: ?f= (vecchi link social),
+  // ?pv= (vecchi QR stampati che passano per feedback.html → ponte).
+  var params  = new URLSearchParams(window.location.search);
+  var tag     = (params.get('s') || params.get('f') || '').toLowerCase();
+  var pvParam = (params.get('pv') || '').toLowerCase();
+
+  function pvFromText(t){
+    if(!t) return '';
+    if(t.indexOf('m178') > -1) return 'Master 178';
+    if(t.indexOf('mulino') > -1) return 'Il Mulino';
+    if(t.indexOf('pg') > -1 || t.indexOf('gusto') > -1) return 'Punto Gusto';
+    return '';
   }
 
+  var pvName  = pvFromText(tag) || pvFromText(pvParam);
+  // Modalità "negozio" se l'etichetta è un QR (contiene "qr") o arriva da ?pv=
+  var isNegozio = (tag.indexOf('qr') > -1) || (pvParam !== '');
+  // Fonte registrata nel foglio = etichetta grezza (così filtri per canale/PV)
+  var fonte = tag || (pvParam ? ('qr-' + pvParam) : 'diretto');
+
+  // ---- Riferimenti DOM -----------------------------------------------------
+  var intro       = document.getElementById('intro');
+  var signupTitle = document.getElementById('signup-title');
+  var signupSub   = document.getElementById('signup-sub');
+  var caffePromo  = document.getElementById('caffe-promo');
+  var caffeCoupon = document.getElementById('caffe-coupon');
+  var skipWrap    = document.getElementById('skip-link');
+  var skipBtn     = document.getElementById('skip-btn');
+  var feedback    = document.getElementById('feedback');
+  var okTitle     = document.getElementById('ok-title');
+  var okText      = document.getElementById('ok-text');
+  var goodBtn     = document.getElementById('good-btn');
+  var badBtn      = document.getElementById('bad-btn');
+  var pvSel       = document.getElementById('f-pv');
+
+  // Pre-seleziona il PV nel form, se lo conosciamo dalla provenienza
+  if (pvSel && pvName) pvSel.value = pvName;
+
+  // Prepara i link di feedback in base al PV (o fallback Master 178)
+  function setupFeedbackLinks(){
+    var p   = pvName && PV_DATA[pvName] ? pvName : 'Master 178';
+    var rev = PV_DATA[p].review;
+    if (goodBtn) goodBtn.href = rev;
+    if (badBtn) {
+      var msg = 'Ciao, vorrei lasciarvi un feedback su ' + p + ': ';
+      badBtn.href = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg);
+    }
+  }
+
+  function showFeedback(intro2){
+    var sub = document.getElementById('fb-sub');
+    if (intro2 && sub) sub.textContent = intro2;
+    feedback.style.display = 'block';
+  }
+
+  // ---- Configura la pagina secondo la modalità -----------------------------
+  if (isNegozio) {
+    if (intro) intro.style.display = 'none';
+    signupTitle.textContent = 'Entra nel mondo Master Bakery';
+    signupSub.textContent   = 'Lascia i tuoi dati: ti teniamo aggiornato sulle novità.';
+    caffePromo.style.display = 'block';
+    skipWrap.style.display   = 'block';
+    okTitle.textContent = 'Grazie, sei iscritto!';
+    okText.textContent  = 'Ti terremo aggiornato sulle nostre novità.';
+    setupFeedbackLinks();
+
+    // "Salta" → niente iscrizione, vai diretto al feedback
+    if (skipBtn) skipBtn.addEventListener('click', function(){
+      document.getElementById('signup-form').style.display = 'none';
+      caffePromo.style.display = 'none';
+      skipWrap.style.display = 'none';
+      showFeedback('Il tuo parere conta davvero per noi');
+      feedback.scrollIntoView({ behavior:'smooth' });
+    });
+  }
+
+  // ---- Logica del form di iscrizione ---------------------------------------
   var form = document.getElementById('signup-form');
   var err  = document.getElementById('signup-err');
   var ok   = document.getElementById('signup-ok');
@@ -496,7 +665,8 @@ body{
 
     var payload = {
       data: new Date().toLocaleString('it-IT', { timeZone: 'Europe/Rome' }),
-      nome: nome, email: email, cellulare: cell, pv: pv, fonte: fonte
+      nome: nome, email: email, cellulare: cell,
+      pv: pv || (pvName || ''), fonte: fonte
     };
     fetch(TRACK_URL, {
       method:'POST', mode:'no-cors',
@@ -504,7 +674,13 @@ body{
       body: JSON.stringify(payload)
     }).then(function(){
       form.style.display = 'none';
+      skipWrap.style.display = 'none';
       ok.style.display = 'block';
+      if (isNegozio) {
+        caffePromo.style.display = 'none';
+        caffeCoupon.style.display = 'block';   // mostra il coupon caffè
+        showFeedback('E ora, com’è andata oggi?'); // poi chiedi la recensione
+      }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }).catch(function(){
       btn.disabled = false; btn.textContent = 'Iscrivimi';
