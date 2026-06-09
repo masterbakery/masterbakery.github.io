@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- ============================================================
      Master Bakery — HUB unico link.masterbakery.it
-     Aggiornato al 04/06/2026 (ora Roma) · v2.3 (logo Punto Gusto: da placeholder a immagine "g")
+     Aggiornato al 09/06/2026 (ora Roma) · v2.4 (anti-furbetti caffè: codice coupon + riscatto "una volta sola" sul telefono)
      Una pagina, due modalità decise dall'etichetta ?s= (o ?pv= dai QR stampati):
        • social/adv  → form "Resta in contatto" in cima + i 3 PV
        • negozio (?s=qr-...) → iscrizione col CAFFÈ in regalo, poi "Com'è andata?"
@@ -269,6 +269,25 @@ body{
 }
 .caffe-coupon .stamp .valid{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
 .caffe-coupon .stamp .emit{font-size:9px;font-weight:400;letter-spacing:.3px;opacity:.8;margin-top:1px}
+/* Codice coupon (a vista) */
+.caffe-coupon .code{
+  display:inline-block;margin-top:10px;font-family:'Courier New',monospace;
+  font-size:16px;font-weight:700;letter-spacing:2px;color:var(--c-brown);
+  background:var(--c-cream);border-radius:6px;padding:3px 12px;
+}
+/* Comando per la commessa: "segna come servito" */
+.caffe-coupon .riscatta{margin-top:14px}
+.caffe-coupon .riscatta a{font-size:11px;color:var(--c-text-muted);text-decoration:underline;cursor:pointer}
+/* Timbro "già usato" + stato grigio del coupon */
+.caffe-coupon .used-stamp{
+  display:none;margin-top:12px;color:#b00020;border:2px solid #b00020;border-radius:6px;
+  padding:5px 14px;font-weight:700;text-transform:uppercase;letter-spacing:1px;
+  transform:rotate(-6deg);font-size:13px;
+}
+.caffe-coupon.used{border-style:solid;border-color:#cfcfcf;background:#f4f4f4;opacity:.9}
+.caffe-coupon.used .ico,.caffe-coupon.used .t{filter:grayscale(1);opacity:.55}
+.caffe-coupon.used .used-stamp{display:inline-block}
+.caffe-coupon.used .stamp,.caffe-coupon.used .riscatta{display:none}
 
 /* Link "salta" (modalità negozio) */
 .skip-link{display:none;text-align:center;margin-top:14px}
@@ -369,10 +388,15 @@ body{
       <div class="caffe-coupon" id="caffe-coupon">
         <div class="ico">☕</div>
         <div class="t">Un caffè offerto!</div>
-        <div class="d">Mostra questa schermata al banco alla tua prossima visita.</div>
+        <div class="d" id="caffe-d">Mostra questa schermata al banco alla tua prossima visita.</div>
+        <div class="code" id="caffe-code"></div>
         <div class="stamp" id="caffe-stamp">
           <div class="valid" id="caffe-valid"></div>
           <div class="emit" id="caffe-emit"></div>
+        </div>
+        <div class="used-stamp" id="caffe-used-stamp">Già riscattato</div>
+        <div class="riscatta" id="caffe-riscatta">
+          <a id="caffe-riscatta-btn">Commessa: segna come servito ✓</a>
         </div>
       </div>
     </div>
@@ -459,7 +483,7 @@ body{
     <div class="pv-meta">
       <div class="row">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-7 8-13a8 8 0 1 0-16 0c0 6 8 13 8 13z"/><circle cx="12" cy="9" r="3"/></svg>
-        <div><span class="lbl">Indirizzo:</span>Corso Dante 21, 15011 Acqui Terme (AL)</div>
+        <div><span class="lbl">Indirizzo:</span>Corso Dante 19, 15011 Acqui Terme (AL)</div>
       </div>
       <div class="row">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
@@ -634,6 +658,68 @@ body{
     feedback.style.display = 'block';
   }
 
+  // ---- Coupon caffè: codice "a vista" (A) + riscatto una-tantum (B) --------
+  // Salvato nel browser del cliente (nessun dato personale): blocca il riuso
+  // pigro dello stesso buono. NB: device-local → screenshot/incognito lo aggirano
+  // (per il blocco "serio" servirebbe il Livello 2 lato server).
+  var COUPON_KEY = 'mb_coupon_v1';
+  function couponRead(){
+    try { return JSON.parse(localStorage.getItem(COUPON_KEY) || 'null'); } catch(e){ return window._mbCoupon || null; }
+  }
+  function couponWrite(c){
+    try { localStorage.setItem(COUPON_KEY, JSON.stringify(c)); } catch(e){ window._mbCoupon = c; }
+  }
+  function genCode(){
+    var s = (Date.now().toString(36) + Math.random().toString(36).slice(2)).toUpperCase().replace(/[^A-Z0-9]/g,'');
+    return 'MB-' + s.slice(-4);
+  }
+  function fmtData(d){ return new Date(d).toLocaleDateString('it-IT'); }
+
+  function renderCoupon(c){
+    var codeEl = document.getElementById('caffe-code');
+    var vEl    = document.getElementById('caffe-valid');
+    var eEl    = document.getElementById('caffe-emit');
+    var dEl    = document.getElementById('caffe-d');
+    var uStamp = document.getElementById('caffe-used-stamp');
+    if (codeEl) codeEl.textContent = c.code;
+    if (eEl)    eEl.textContent = 'Emesso il ' + fmtData(c.emesso);
+    if (c.riscattato){
+      caffeCoupon.classList.add('used');
+      if (dEl) dEl.textContent = 'Questo caffè è già stato servito.';
+      if (vEl) vEl.textContent = '';
+      if (uStamp) uStamp.textContent = 'Già riscattato il ' + fmtData(c.riscattatoIl);
+    } else {
+      caffeCoupon.classList.remove('used');
+      if (dEl) dEl.textContent = 'Mostra questa schermata al banco alla tua prossima visita.';
+      if (vEl) vEl.textContent = 'Valido fino al ' + fmtData(c.scad);
+    }
+    caffeCoupon.style.display = 'block';
+  }
+
+  function mostraCoupon(){
+    var c = couponRead();
+    var oggi = new Date();
+    // Nessun buono salvato, oppure scaduto e mai riscattato → ne emetto uno nuovo.
+    // Se esiste ed è ancora valido (anche già riscattato) → riuso quello (anti-furbo).
+    if (!c || (new Date(c.scad) < oggi && !c.riscattato)){
+      var scad = new Date(); scad.setDate(scad.getDate() + COUPON_VALIDITA_GIORNI);
+      c = { code: genCode(), emesso: oggi.toISOString(), scad: scad.toISOString(), riscattato:false, riscattatoIl:null };
+      couponWrite(c);
+    }
+    renderCoupon(c);
+  }
+
+  // La commessa tocca "segna come servito" sul telefono del cliente
+  var riscattaBtn = document.getElementById('caffe-riscatta-btn');
+  if (riscattaBtn) riscattaBtn.addEventListener('click', function(){
+    var c = couponRead();
+    if (!c || c.riscattato) return;
+    if (!window.confirm('Confermi: caffè servito? Il buono verrà annullato su questo telefono.')) return;
+    c.riscattato = true; c.riscattatoIl = new Date().toISOString();
+    couponWrite(c);
+    renderCoupon(c);
+  });
+
   // ---- Configura la pagina secondo la modalità -----------------------------
   if (isNegozio) {
     if (intro) intro.style.display = 'none';
@@ -693,16 +779,8 @@ body{
       ok.style.display = 'block';
       if (isNegozio) {
         caffePromo.style.display = 'none';
-        // Timbro: data emissione (oggi) + scadenza (oggi + COUPON_VALIDITA_GIORNI)
-        var oggi = new Date();
-        var scad = new Date(); scad.setDate(scad.getDate() + COUPON_VALIDITA_GIORNI);
-        var fmtData = function(d){ return d.toLocaleDateString('it-IT'); };
-        var vEl = document.getElementById('caffe-valid');
-        var eEl = document.getElementById('caffe-emit');
-        if (vEl) vEl.textContent = 'Valido fino al ' + fmtData(scad);
-        if (eEl) eEl.textContent = 'Emesso il ' + fmtData(oggi);
-        caffeCoupon.style.display = 'block';   // mostra il coupon caffè (con timbro scadenza)
-        showFeedback(); // poi chiedi la recensione (sottotitolo di default, niente ripetizione)
+        mostraCoupon();   // codice "a vista" + timbro + gestione riscatto (anti-furbetti A+B)
+        showFeedback();   // poi chiedi la recensione (sottotitolo di default, niente ripetizione)
       }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }).catch(function(){
