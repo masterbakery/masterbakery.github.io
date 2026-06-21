@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <!-- ============================================================
      Master Bakery — HUB unico link.masterbakery.it
-     Aggiornato al 09/06/2026 (ora Roma) · v2.5 (riscatto caffè tracciato sul foglio: scheda "Riscatti_Caffe" + colonna Codice in Lead_LinkBio)
+     Aggiornato al 21/06/2026 10:52 (ora Roma) · v2.6 (RECUPERO BUONO: ricompare alla riapertura — da memoria telefono o dal link ?buono=MB-XXXX&scad= dell'email di conferma. Fix bug "chiudo la pagina e perdo il caffè".)
+     v2.5 (09/06): riscatto caffè tracciato sul foglio (scheda "Riscatti_Caffe" + colonna Codice in Lead_LinkBio)
      Una pagina, due modalità decise dall'etichetta ?s= (o ?pv= dai QR stampati):
        • social/adv  → form "Resta in contatto" in cima + i 3 PV
        • negozio (?s=qr-...) → iscrizione col CAFFÈ in regalo, poi "Com'è andata?"
@@ -788,7 +789,8 @@ body{
       data: new Date().toLocaleString('it-IT', { timeZone: 'Europe/Rome' }),
       nome: nome, email: email, cellulare: cell,
       pv: pv || (pvName || ''), fonte: fonte,
-      codice: couponObj ? couponObj.code : ''
+      codice: couponObj ? couponObj.code : '',
+      scadenza: couponObj ? couponObj.scad : ''   // serve allo script per la mail (data + link ?buono=...&scad=)
     };
     fetch(TRACK_URL, {
       method:'POST', mode:'no-cors',
@@ -809,6 +811,53 @@ body{
       showErr('Qualcosa è andato storto, riprova.');
     });
   });
+
+  // ---- Ricomparsa del buono alla riapertura (fix "chiudo e perdo il caffè") ----
+  // Se il cliente riapre la pagina (o tocca "Apri il tuo buono" nell'email) ritrova
+  // il caffè SENZA ricompilare il form: lo leggiamo dalla memoria del telefono e, in
+  // più, dal codice nel link (?buono=MB-XXXX&scad=AAAA-MM-GG) così funziona anche se
+  // ha cambiato/pulito il browser. Al banco si mostra SEMPRE la pagina (col tasto
+  // "segna come servito"): l'email è solo la scorciatoia per ritrovarla.
+  function couponDaLink(){
+    var code = (params.get('buono') || '').toUpperCase().trim();
+    if (!code) return null;
+    var scadStr = params.get('scad') || '';
+    var scad = null;
+    if (scadStr){ var dt = new Date(scadStr); if (!isNaN(dt.getTime())) scad = dt.toISOString(); }
+    if (!scad){ var s2 = new Date(); s2.setDate(s2.getDate() + COUPON_VALIDITA_GIORNI); scad = s2.toISOString(); }
+    return { code: code, emesso: new Date().toISOString(), scad: scad,
+             riscattato:false, riscattatoIl:null, pv: pvName || '', fonte: fonte || '' };
+  }
+
+  function mostraBuonoSalvato(c){
+    var formEl = document.getElementById('signup-form');
+    if (formEl)     formEl.style.display = 'none';
+    if (caffePromo) caffePromo.style.display = 'none';
+    if (skipWrap)   skipWrap.style.display = 'none';
+    if (intro)      intro.style.display = 'none';
+    okTitle.textContent = c.riscattato ? 'Questo caffè è già stato usato' : 'Il tuo caffè ti aspetta ☕';
+    okText.textContent  = c.riscattato ? 'Grazie per essere passato da noi!' : 'Mostra questo buono al banco alla tua prossima visita.';
+    ok.style.display = 'block';
+    renderCoupon(c);
+    setupFeedbackLinks();
+    showFeedback();
+  }
+
+  (function recuperaBuono(){
+    var salvato = couponRead();
+    var daLink  = couponDaLink();
+    var c = null;
+    if (salvato && (!daLink || salvato.code === daLink.code)) {
+      c = salvato;                          // il telefono ha già il buono (con lo stato del riscatto)
+    } else if (daLink) {
+      c = daLink;
+      if (!salvato) couponWrite(daLink);    // lo salvo su questo telefono → il tasto "servito" qui funziona e resta
+    }
+    if (c){
+      var nonScaduto = new Date(c.scad) >= new Date();
+      if (nonScaduto || c.riscattato) mostraBuonoSalvato(c);
+    }
+  })();
 })();
 </script>
 </body>
